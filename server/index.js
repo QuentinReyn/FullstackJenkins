@@ -1,11 +1,14 @@
 const express = require('express'),
-  app = express(),
+  app = express()
   cors = require('cors'),
   mysql = require('mysql'), // import mysql module
   bodyParser = require('body-parser');
-
+  app.use(express.static('./dist/AngularJenkins'));
   let port = process.env.PORT || 3000;
 // make server object that contain port property and the value for our server.
+app.get('/*', (req, res) =>
+    res.sendFile('index.html', {root: 'dist/AngularJenkins/'}),
+);
 
 db = mysql.createConnection({
     host: '127.0.0.1',
