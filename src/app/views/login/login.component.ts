@@ -7,30 +7,33 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-
-  constructor(private userService:UserService ,private route: ActivatedRoute, private router: Router, private _formBuilder: FormBuilder) { }
+  constructor(
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private _formBuilder: FormBuilder
+  ) {}
 
   //@ts-ignore
-  loginForm: FormGroup
+  loginForm: FormGroup;
   invalidLogin: boolean = false;
-  returnUrl: string = "";
-  listUsers: User[]= []
+  returnUrl: string = '';
+  listUsers: User[] = [];
 
   ngOnInit() {
-
     this.loginForm = this._formBuilder.group({
       login: ['', Validators.required],
       password: ['', Validators.required],
     });
-
+    this.getUsers();
     // reset login status
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  getUsers(){
+  getUsers() {
     this.userService.listUser().subscribe((data) => {
       //@ts-ignore
       this.listUsers = data.data;
@@ -39,7 +42,15 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    if(this.listUsers.find(m=>m.login == this.loginForm.value['login'] && this.listUsers.find(m=>m.password == this.loginForm.value['password']))){
+    var user = this.listUsers.find(
+      (m) =>
+        m.Login === this.loginForm.value['login'] &&
+        this.listUsers.find(
+          (m) => m.Password === this.loginForm.value['password']
+        )
+    );
+    if (user != null) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
       this.router.navigate([this.returnUrl]);
     }
   }

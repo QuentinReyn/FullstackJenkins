@@ -1,35 +1,57 @@
 <div class="container">
-    <mat-toolbar color="primary" class="toolbar mat-elevation-z6">
-      <button mat-icon-button (click)="snav.toggle()">
-        <mat-icon class="toggle-sidenav-icon">
-          {{ (snav.opened) ? 'format_indent_decrease' : 'menu' }}
-        </mat-icon>
+  <mat-toolbar color="primary" class="toolbar mat-elevation-z6">
+    <button mat-icon-button (click)="snav.toggle()">
+      <mat-icon class="toggle-sidenav-icon">
+        {{ (snav.opened) ? 'format_indent_decrease' : 'menu' }}
+      </mat-icon>
+    </button>
+    <h1 class="app-name">
+      <a routerLink="/">
+        JenkinsNeedYou
+      </a>
+    </h1>
+    <div class="flex-spacer"></div>
+    <div *ngIf="user && user.IsAdmin" class="full-height">
+      <button mat-button [matMenuTriggerFor]="adminPanel" class="button-settings">
+          <mat-icon>settings</mat-icon>
+          <span class="admin-panel-text">
+              App management
+          </span>
+          <mat-icon>arrow_drop_down</mat-icon>
       </button>
-      <h1 class="app-name">
-        <a routerLink="/">
-          JenkinsNeedYou
-        </a>
-      </h1>
-      <div class="flex-spacer"></div>
-      <a routerLink="/login">Login</a>
-    </mat-toolbar>
-    
-    <mat-sidenav-container class="sidenav-container">
-      <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
-                   [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" opened="true" class="mat-elevation-z6">
-        <mat-nav-list>
-          <a mat-list-item routerLink="." [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}">
-            <mat-icon>home</mat-icon>
-            <span>Home</span>
+      <mat-menu #adminPanel="matMenu" yPosition="below" [overlapTrigger]="false">
+          <a routerLink="/admin/users/list" routerLinkActive="active" mat-menu-item>
+              <mat-icon>account_box</mat-icon>
+              <span>Utilisateurs</span>
           </a>
-        </mat-nav-list>
-      </mat-sidenav>
-  
-      <mat-sidenav-content>        
-        <div class="content-container">
-          <router-outlet></router-outlet>
-        </div>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
+          <a routerLink="/admin/choices/list" routerLinkActive="active" mat-menu-item>
+              <mat-icon>calendar_today</mat-icon>
+              <span>Choix</span>
+          </a>
+      </mat-menu>
   </div>
+    <a routerLink="/login" *ngIf="user == null; else displayUser">Login</a>
+    <ng-template #displayUser>
+      <span [innerHTML]="user.Login"></span>
+      <button mat-button (click)="disconnect()">Logout</button>
+    </ng-template>
+  </mat-toolbar>
   
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
+                 [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" opened="true" class="mat-elevation-z6">
+      <mat-nav-list>
+        <a mat-list-item routerLink="." [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>        
+      <div class="content-container">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
